@@ -1,0 +1,20 @@
+{
+  "name": "srcoder/template-bridge",
+  "description": "Template bridge between your legacy and other template engines",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jeroen Boersma",
+      "email": "jeroen@srcode.nl"
+    }
+  ],
+  "require": {
+    "php": "~7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Srcoder\\TemplateBridge": "src/"
+    }
+  }
+}

@@ -2,6 +2,10 @@
 
 Template bridge between your legacy php code and newer template engines.
 
+## Dependencies
+
+Requires minimum of PHP 7.0. Also uses `srcoder/normalize-strings` for string manipulation.
+
 ## Engines
 
 * Plain

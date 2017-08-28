@@ -36,31 +36,31 @@ class Twig extends EngineAbstract
      * Return template
      *
      * @param Data $data
-     * @param string $name
+     * @param string $singleFilename
      * @return string
      */
-    public function render(Data $data = null, string $name = null): string
+    public function render(Data $data = null, string $singleFilename = null): string
     {
         return implode('',
-                array_map(function($name) use ($data) {
+                array_map(function($filepath) use ($data) {
                     return $this->getTwig()
                             ->render($name, $data ? $data->data() : []);
                 }
-                , $this->getFiles($name)
+                , $this->getFilePaths($singleFilename)
         ));
     }
 
     /**
      * Lookup a file
      *
-     * @param string $name
+     * @param string $filename
      * @return string
      * @throws NotFoundException
      */
-    public function lookup(string $name): string
+    public function lookup(string $filename): string
     {
         $twig = $this->getTwig();
-        $file = $this->normalize($name);
+        $file = $this->normalize($filename);
 
         try {
             $twig->load($file);
@@ -81,7 +81,7 @@ class Twig extends EngineAbstract
     {
         /** @var \Twig_Loader_Filesystem $loader */
         $loader = $this->getTwig()
-            ->getLoader();
+                ->getLoader();
         $loader->addPath($path);
 
         return $this;
@@ -97,7 +97,7 @@ class Twig extends EngineAbstract
     {
         /** @var \Twig_Loader_Filesystem $loader */
         $loader = $this->getTwig()
-            ->getLoader();
+                ->getLoader();
         $loader->prependPath($path);
 
         return $this;

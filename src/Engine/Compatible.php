@@ -10,6 +10,7 @@ namespace Srcoder\TemplateBridge\Engine;
 use Srcoder\Normalize\Rule\Append;
 use Srcoder\TemplateBridge\Data;
 use Srcoder\TemplateBridge\Engine\Compatible\File;
+use Srcoder\TemplateBridge\Exception\InvalidParentTypeException;
 use Srcoder\TemplateBridge\Exception\NotFoundException;
 
 class Compatible extends EngineAbstract
@@ -168,7 +169,7 @@ class Compatible extends EngineAbstract
     public function setParent($class) : Compatible
     {
         if (!is_object($class)) {
-            throw new \Exception('Invalid parent type');
+            throw new InvalidParentTypeException('Invalid parent type');
         }
         $this->parent = $class;
         return $this;
@@ -178,28 +179,27 @@ class Compatible extends EngineAbstract
      * Return template
      *
      * @param Data $data
-     * @param string $name
+     * @param string $singleFilename
      * @return string
      */
-    public function render(Data $data = null, string $name = null): string
+    public function render(Data $data = null, string $singleFilename = null): string
     {
-        $files = $this->getFiles($name);
         return implode('', array_map(function($filename) use ($data) {
             $compatibleClass = new File($this->methods, $this->parent);
             return $compatibleClass->___render($filename, $data);
-        }, $files, array_keys($files)));
+        }, $this->getFiles($singleFilename)));
     }
 
     /**
      * Lookup a file
      *
-     * @param string $name
+     * @param string $filename
      * @return string
      * @throws NotFoundException
      */
-    public function lookup(string $name): string
+    public function lookup(string $filename): string
     {
-        $filename = $this->normalize($name);
+        $filename = $this->normalize($filename);
 
         $filePath = array_reduce($this->paths, function($found, $path) use ($filename) {
 
@@ -207,8 +207,13 @@ class Compatible extends EngineAbstract
                 return $found;
             }
 
-            $filePath = $path . DIRECTORY_SEPARATOR . $filename;
+            $filePath = realpath($path . DIRECTORY_SEPARATOR . $filename);
+            if (false === strpos($filePath, $path)) {
+                // Not allowed
+                return false;
+            }
             if (!is_readable($filePath)) {
+                // Not found
                 return false;
             }
 

@@ -6,55 +6,55 @@ namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\TemplateBridge\Data;
 use Srcoder\TemplateBridge\Exception\NotFoundException;
-use Srcoder\Normalize\Normalize;
 
 interface EngineInterface
 {
 
     /**
-     * Load a file
-     *
-     * @param string $name
-     * @return string
-     */
-    public function addFileAndToHtml(string $name) : string;
-
-    /**
      * Does a file exists
      *
-     * @param string $name
+     * @param string $filename
      * @return bool
      */
-    public function exists(string $name) : bool;
+    public function exists(string $filename) : bool;
 
     /**
      * Add a file
      *
-     * @param string $name
+     * @param string $filename
      * @return EngineInterface
      */
-    public function addFile(string $name) : EngineInterface;
+    public function addFile(string $filename) : EngineInterface;
 
     /**
      * Render template
      *
      * @param Data $data
-     * @param string $name
+     * @param string $singleFilename
      * @return string
      */
-    public function render(Data $data = null, string $name = null) : string;
+    public function render(Data $data = null, string $singleFilename = null) : string;
+
+    /**
+     * Render template for given file
+     *
+     * @param string $fileName
+     * @param Data|null $data
+     * @return string
+     */
+    public function addFileAndRender(string $filename, Data $data = null) : string;
 
     /**
      * Lookup a file
      *
-     * @param string $name
+     * @param string $filename
      * @return string
      * @throws NotFoundException
      */
-    public function lookup(string $name) : string;
+    public function lookup(string $filename) : string;
 
     /**
-     * Append a path for lookup
+     * Append a lookup path
      *
      * @param string $path
      * @return EngineInterface
@@ -62,7 +62,7 @@ interface EngineInterface
     public function appendPath(string $path) : EngineInterface;
 
     /**
-     * Prepend a path for lookup
+     * Prepend a lookup path
      *
      * @param string $path
      * @return EngineInterface

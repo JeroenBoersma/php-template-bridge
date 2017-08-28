@@ -8,13 +8,14 @@ declare(strict_types=1);
 namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\Normalize\NormalizeTrait;
+use Srcoder\TemplateBridge\Data;
 use Srcoder\TemplateBridge\Exception\ExistsException;
 
 abstract class EngineAbstract implements EngineInterface
 {
 
     /** @var array */
-    protected $files = [];
+    protected $filepaths = [];
 
     /** Import normalize trait */
     use NormalizeTrait;
@@ -22,41 +23,41 @@ abstract class EngineAbstract implements EngineInterface
     /**
      * Check if name exists in filelist
      *
-     * @param string $name
+     * @param string $filename
      * @return bool
      */
-    public function exists(string $name) : bool
+    public function exists(string $filename) : bool
     {
-        return isset($this->files[$name]);
+        return isset($this->filepaths[$filename]);
     }
 
     /**
      * Add a file to the stack
      *
-     * @param string $name
+     * @param string $filename
      * @return EngineInterface
      * @throws ExistsException
      */
-    public function addFile(string $name) : EngineInterface
+    public function addFile(string $filename) : EngineInterface
     {
-        if ($this->exists($name)) {
-            throw new ExistsException("File '${name}' is already defined.");
+        if ($this->exists($filename)) {
+            throw new ExistsException("File '${filename}' is already defined.");
         }
-        $this->files[$name] = $this->lookup($name);
+        $this->filepaths[$filename] = $this->lookup($filename);
 
         return $this;
     }
 
     /**
-     * Load file
      *
-     * @param string $name
+     * @param string $filename
+     * @param Data|null $data
      * @return string
      */
-    public function addFileAndToHtml(string $name) : string
+    public function addFileAndRender(string $filename, Data $data = null): string
     {
-        return $this->addFile($name)
-                ->render();
+        return $this->addFile($filename)
+                ->render($data, $filename);
     }
 
     /**
@@ -72,33 +73,33 @@ abstract class EngineAbstract implements EngineInterface
     /**
      * Get file
      *
-     * @param string $name
+     * @param string $filename
      * @return string
      */
-    public function getFile(string $name) : string
+    public function getFilepath(string $filename) : string
     {
-        return $this->files[$name] ?? '';
+        return $this->filepaths[$filename] ?? '';
     }
 
     /**
-     * Get files
+     * Get filepaths
      *
      * @param string|null $name
      * @return array
      */
-    public function getFiles(string $name = null) : array
+    public function getFilePaths(string $singleFilename = null) : array
     {
-        if (null === $name) {
-            return $this->files;
+        if (null === $singleFilename) {
+            return $this->filepaths;
         }
 
-        $file = $this->getFile($name);
+        $filepath = $this->getFilepath($singleFilename);
 
-        if (!$file) {
+        if (!$filepath) {
             return [];
         }
 
-        return [$name => $file];
+        return [$name => $filepath];
     }
 
 }

@@ -82,7 +82,7 @@ class Plain extends EngineAbstract
      * @param string $name
      * @return string
      */
-    public function render(Data $data = null, string $name = null): string
+    public function render(Data $data = null, string $singleFilename = null): string
     {
         $files = $this->getFiles($name);
 

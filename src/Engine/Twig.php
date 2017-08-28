@@ -6,6 +6,7 @@
 namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\Normalize\Rule\Append;
+use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Data;
 use Srcoder\TemplateBridge\Exception\NotFoundException;
 
@@ -39,15 +40,19 @@ class Twig extends EngineAbstract
      * @param string $singleFilename
      * @return string
      */
-    public function render(Data $data = null, string $singleFilename = null): string
+    public function render(Data $data = null, string $singleFilename = null): Content
     {
-        return implode('',
-                array_map(function($filepath) use ($data) {
-                    return $this->getTwig()
-                            ->render($name, $data ? $data->data() : []);
-                }
-                , $this->getFilePaths($singleFilename)
-        ));
+        $content = new Content('');
+        $filePaths = $this->getFilePaths($singleFilename);
+
+        return array_reduce($filePaths, function(Content $content, $filename) use ($data, $content) {
+            $rendered = $this->getTwig()
+                    ->render($filename, $data->data());
+
+            $content->append($rendered);
+
+            return $content;
+        }, $content);
     }
 
     /**

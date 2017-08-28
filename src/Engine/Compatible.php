@@ -9,6 +9,7 @@ namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\Normalize\Rule\Append;
 use Srcoder\TemplateBridge\Data;
+use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Engine\Compatible\File;
 use Srcoder\TemplateBridge\Exception\InvalidParentTypeException;
 use Srcoder\TemplateBridge\Exception\NotFoundException;
@@ -182,12 +183,22 @@ class Compatible extends EngineAbstract
      * @param string $singleFilename
      * @return string
      */
-    public function render(Data $data = null, string $singleFilename = null): string
+    public function render(Data $data = null, string $singleFilename = null): Content
     {
-        return implode('', array_map(function($filename) use ($data) {
+        $content = new Content('', true);
+        $filePaths = $this->getFilePaths($singleFilename);
+
+        return array_reduce($filePaths, function(Content $content, $filename) use ($data, $content) {
             $compatibleClass = new File($this->methods, $this->parent);
-            return $compatibleClass->___render($filename, $data);
-        }, $this->getFilePaths($singleFilename)));
+            $rendered = $compatibleClass->___render($filename, $data);
+
+            if ($rendered->isReturn() && $content->isReturn()) {
+                return $rendered;
+            }
+            $content->append($rendered->__toString());
+
+            return $content;
+        }, $content);
     }
 
     /**
@@ -207,11 +218,7 @@ class Compatible extends EngineAbstract
                 return $found;
             }
 
-            $filePath = realpath($path . DIRECTORY_SEPARATOR . $filename);
-            if (false === strpos($filePath, $path)) {
-                // Not allowed
-                return false;
-            }
+            $filePath = $path . DIRECTORY_SEPARATOR . $filename;
             if (!is_readable($filePath)) {
                 // Not found
                 return false;

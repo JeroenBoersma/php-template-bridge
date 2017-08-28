@@ -9,6 +9,7 @@ namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\Normalize\NormalizeTrait;
 use Srcoder\TemplateBridge\Data;
+use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Exception\ExistsException;
 
 abstract class EngineAbstract implements EngineInterface
@@ -52,9 +53,9 @@ abstract class EngineAbstract implements EngineInterface
      *
      * @param string $filename
      * @param Data|null $data
-     * @return string
+     * @return Content
      */
-    public function addFileAndRender(string $filename, Data $data = null): string
+    public function addFileAndRender(string $filename, Data $data = null): Content
     {
         return $this->addFile($filename)
                 ->render($data, $filename);
@@ -67,7 +68,8 @@ abstract class EngineAbstract implements EngineInterface
      */
     public function __toString() : string
     {
-        return $this->render();
+        return $this->render()
+                ->__toString();
     }
 
     /**
@@ -99,7 +101,7 @@ abstract class EngineAbstract implements EngineInterface
             return [];
         }
 
-        return [$name => $filepath];
+        return [$singleFilename => $filepath];
     }
 
 }

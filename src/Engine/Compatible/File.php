@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Srcoder\TemplateBridge\Engine\Compatible;
 
 use Srcoder\TemplateBridge\Data;
+use Srcoder\TemplateBridge\Content;
 
 class File
 {
@@ -53,6 +54,42 @@ class File
     }
 
     /**
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (!$this->___parent) {
+            return null;
+        }
+
+        $func = function () use ($name) {
+            return $this->{$name};
+        };
+
+        return $func->call($this->___parent);
+    }
+
+    /**
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set($name, $value)
+    {
+        if (!$this->___parent) {
+            return;
+        }
+
+        $func = function () use ($name, $value) {
+            $this->{$name} = $value;
+        };
+
+        $func->call($this->___parent);
+    }
+
+    /**
      * @param string $name
      * @param array $arguments
      * @return mixed
@@ -72,7 +109,7 @@ class File
      * @param string $___filePath
      * @return string
      */
-    public function ___render(string $___filePath, Data $___data = null) : string
+    public function ___render(string $___filePath, Data $___data = null) : Content
     {
         $___data = $___data ?? new Data();
         foreach ($___data->data() as $___k => $___v) {
@@ -82,8 +119,16 @@ class File
         unset($___data);
 
         ob_start();
-        include $___filePath;
-        return ob_get_clean();
+        $return = include $___filePath;
+        $content = ob_get_clean();
+        $isReturn = false;
+
+        if (1 !== $return) {
+            $isReturn = true;
+            $content = $return;
+        }
+
+        return new Content($content, $isReturn);
     }
 
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\TemplateBridge\Data;
+use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Exception\NotFoundException;
 
 interface EngineInterface
@@ -31,18 +32,18 @@ interface EngineInterface
      *
      * @param Data $data
      * @param string $singleFilename
-     * @return string
+     * @return Content
      */
-    public function render(Data $data = null, string $singleFilename = null) : string;
+    public function render(Data $data = null, string $singleFilename = null) : Content;
 
     /**
      * Render template for given file
      *
      * @param string $fileName
      * @param Data|null $data
-     * @return string
+     * @return Content
      */
-    public function addFileAndRender(string $filename, Data $data = null) : string;
+    public function addFileAndRender(string $filename, Data $data = null) : Content;
 
     /**
      * Lookup a file

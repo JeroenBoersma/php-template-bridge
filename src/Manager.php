@@ -164,16 +164,25 @@ class Manager
      *
      * @param Data $data
      * @param string $filename
-     * @return string
+     * @return Content
      */
-    public function render(Data $data = null, string $filename = null) : string
+    public function render(Data $data = null, string $filename = null) : Content
     {
+        $content = new Content('', true);
+
         return array_reduce(
                 array_reverse($this->getEngines()),
-                function(string $html, EngineInterface $engine) use ($data, $filename) {
-                    return $html . $engine->render($data, $name);
+                function(Content $content, EngineInterface $engine) use ($data, $filename) {
+                    $rendered = $engine->render($data, $filename);
+
+                    if ($rendered->isReturn() && $content->isReturn()) {
+                        return $rendered;
+                    }
+                    $content->append($rendered->content());
+
+                    return $content;
                 },
-                ''
+                $content
         );
     }
 

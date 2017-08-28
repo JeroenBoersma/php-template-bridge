@@ -84,7 +84,7 @@ class Plain extends EngineAbstract
      */
     public function render(Data $data = null, string $singleFilename = null): string
     {
-        $files = $this->getFiles($name);
+        $files = $this->getFilePaths($singleFilename);
 
         if (empty($files)) {
             // Nothing to render

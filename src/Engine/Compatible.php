@@ -187,7 +187,7 @@ class Compatible extends EngineAbstract
         return implode('', array_map(function($filename) use ($data) {
             $compatibleClass = new File($this->methods, $this->parent);
             return $compatibleClass->___render($filename, $data);
-        }, $this->getFiles($singleFilename)));
+        }, $this->getFilePaths($singleFilename)));
     }
 
     /**

@@ -56,7 +56,7 @@ class Manager
      * @return Manager
      * @throws ExistsException
      */
-    public function add(string $name, EngineInterface $engine, int $priority) : Manager
+    public function addEngine(string $name, EngineInterface $engine, int $priority) : Manager
     {
         if ($this->exists($name)) {
             throw new ExistsException("Engine with name '{$name}' already exist.");
@@ -127,25 +127,25 @@ class Manager
      * Lookup file in one of the engines, highest priority is first
      * If found, we'll stop looking
      *
-     * @param string $name
+     * @param string $filename
      * @param bool $silence
      * @return Manager
      *
      * @throws NotFoundException
      */
-    public function addFile(string $name, bool $silence = true) : Manager
+    public function addFile(string $filename, bool $silence = true) : Manager
     {
-        $fileFound = array_reduce($this->getEngines(), function($fileFound, EngineInterface $engine) use ($name) {
+        $fileFound = array_reduce($this->getEngines(), function($fileFound, EngineInterface $engine) use ($filename) {
             if ($fileFound) {
                 return true;
             }
 
-            if ($engine->exists($name)) {
+            if ($engine->exists($filename)) {
                 return true;
             }
 
             try {
-                $engine->addFile($name);
+                $engine->addFile($filename);
                 return true;
             } catch (NotFoundException $e) {}
 
@@ -153,7 +153,7 @@ class Manager
         }, false);
 
         if (!$silence && !$fileFound) {
-            throw new NotFoundException("File '{$name}' not found in any engine.");
+            throw new NotFoundException("File '{$filename}' not found in any engine.");
         }
 
         return $this;
@@ -163,14 +163,14 @@ class Manager
      * Render all data, highest priority is last
      *
      * @param Data $data
-     * @param string $name
+     * @param string $filename
      * @return string
      */
-    public function render(Data $data = null, string $name = null) : string
+    public function render(Data $data = null, string $filename = null) : string
     {
         return array_reduce(
                 array_reverse($this->getEngines()),
-                function(string $html, EngineInterface $engine) use ($data, $name) {
+                function(string $html, EngineInterface $engine) use ($data, $filename) {
                     return $html . $engine->render($data, $name);
                 },
                 ''

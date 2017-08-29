@@ -11,15 +11,71 @@ use Srcoder\Normalize\NormalizeTrait;
 use Srcoder\TemplateBridge\Data;
 use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Exception\ExistsException;
+use Srcoder\TemplateBridge\Exception\NotFoundException;
 
 abstract class EngineAbstract implements EngineInterface
 {
-
+    /** @var array */
+    protected $paths = [];
+    /** @var string */
+    protected $rootPath = '';
     /** @var array */
     protected $filepaths = [];
 
     /** Import normalize trait */
     use NormalizeTrait;
+
+    public function __construct($paths = [], $rootPath = null)
+    {
+        $this->normalizerInit();
+
+        $this->rootPath = $rootPath ?? getcwd();
+        array_map([$this, 'appendPath'], $paths);
+    }
+
+    /**
+     * Get real path
+     *
+     * @param string $path
+     * @return string
+     */
+    protected function getRealPath(string $path): string
+    {
+        if (0 === strpos($path, DIRECTORY_SEPARATOR)) {
+            return $path;
+        } else {
+            $path = $this->rootPath . DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $path;
+    }
+
+    /**
+     * Append path
+     *
+     * @param string $path
+     * @return EngineInterface
+     */
+    public function appendPath(string $path): EngineInterface
+    {
+        $path && array_push($this->paths, $path);
+
+        return $this;
+    }
+
+
+    /**
+     * Append path
+     *
+     * @param string $path
+     * @return EngineInterface
+     */
+    public function prependPath(string $path): EngineInterface
+    {
+        $path && array_unshift($this->paths, $path);
+
+        return $this;
+    }
 
     /**
      * Check if name exists in filelist
@@ -102,6 +158,39 @@ abstract class EngineAbstract implements EngineInterface
         }
 
         return [$singleFilename => $filepath];
+    }
+
+    /**
+     * Lookup a file
+     *
+     * @param string $filename
+     * @return string
+     * @throws NotFoundException
+     */
+    public function lookup(string $filename): string
+    {
+        $filename = $this->normalize($filename);
+
+        $filePath = array_reduce($this->paths, function($found, $path) use ($filename) {
+
+            if ($found) {
+                return $found;
+            }
+
+            $filePath = $path . DIRECTORY_SEPARATOR . $filename;
+            if (!is_readable($this->getRealPath($filePath))) {
+                // Not found
+                return false;
+            }
+
+            return $filePath;
+        }, false);
+
+        if (false === $filePath) {
+            throw new NotFoundException("Cannot find '{$filename}' in '{$this->rootPath}'.");
+        }
+
+        return $filePath;
     }
 
 }

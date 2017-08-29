@@ -18,11 +18,13 @@ class Twig extends EngineAbstract
 
     public function __construct($paths = [], $rootPath = null, $options = [])
     {
-        $this->normalizerInit()
-                ->addRule(new Append('.html.twig'));
-
-        $loader = new \Twig_Loader_Filesystem($paths, $rootPath);
+        $loader = new \Twig_Loader_Filesystem(['.'], $rootPath);
         $this->_twig = new \Twig_Environment($loader, $options);
+
+        parent::__construct($paths, $rootPath);
+
+        $this->normalizer()
+                ->addRule(new Append('.html.twig'));
     }
 
     /**
@@ -45,67 +47,17 @@ class Twig extends EngineAbstract
         $content = new Content('');
         $filePaths = $this->getFilePaths($singleFilename);
 
-        return array_reduce($filePaths, function(Content $content, $filename) use ($data, $content) {
-            $rendered = $this->getTwig()
-                    ->render($filename, $data->data());
+        $twig = $this->getTwig();
+
+        return array_reduce($filePaths, function(Content $content, $filename) use ($data, $content, $twig) {
+
+            $rendered = $twig->load($filename)
+                    ->render($data->data());
 
             $content->append($rendered);
 
             return $content;
         }, $content);
-    }
-
-    /**
-     * Lookup a file
-     *
-     * @param string $filename
-     * @return string
-     * @throws NotFoundException
-     */
-    public function lookup(string $filename): string
-    {
-        $twig = $this->getTwig();
-        $file = $this->normalize($filename);
-
-        try {
-            $twig->load($file);
-        } catch (\Twig_Error $error) {
-            throw new NotFoundException($error->getMessage(), $error->getCode(), $error);
-        }
-
-        return $file;
-    }
-
-    /**
-     * Add a path for lookup
-     *
-     * @param string $path
-     * @return EngineInterface
-     */
-    public function appendPath(string $path): EngineInterface
-    {
-        /** @var \Twig_Loader_Filesystem $loader */
-        $loader = $this->getTwig()
-                ->getLoader();
-        $loader->addPath($path);
-
-        return $this;
-    }
-
-    /**
-     * Prepend a path for lookup
-     *
-     * @param string $path
-     * @return EngineInterface
-     */
-    public function prependPath(string $path): EngineInterface
-    {
-        /** @var \Twig_Loader_Filesystem $loader */
-        $loader = $this->getTwig()
-                ->getLoader();
-        $loader->prependPath($path);
-
-        return $this;
     }
 
 }

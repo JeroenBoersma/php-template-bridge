@@ -144,6 +144,19 @@ class Manager
                 return true;
             }
 
+            return false;
+        }, false);
+
+        if ($fileFound) {
+            // Already found
+            return $this;
+        }
+
+        $fileFound = array_reduce($this->getEngines(), function($fileFound, EngineInterface $engine) use ($filename) {
+            if ($fileFound) {
+                return true;
+            }
+
             try {
                 $engine->addFile($filename);
                 return true;

@@ -71,5 +71,6 @@ When a Twig file is found it will work exactly as you expect.
 ### Plain engine
 
 Plain files will replace {{$variable}} from the Data object
+Plain engine can also be used for javascript and html
 
 ### Compatible engine

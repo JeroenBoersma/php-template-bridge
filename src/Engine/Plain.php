@@ -28,7 +28,7 @@ class Plain extends EngineAbstract
 
         if (empty($filePaths)) {
             // Nothing to render
-            return '';
+            return $content;
         }
 
         $data = array_filter(array_map(function ($value) {

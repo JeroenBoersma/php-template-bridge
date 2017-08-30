@@ -135,24 +135,17 @@ class Manager
      */
     public function addFile(string $filename, bool $silence = true) : Manager
     {
-        $fileFound = array_reduce($this->getEngines(), function($fileFound, EngineInterface $engine) use ($filename) {
-            if ($fileFound) {
-                return true;
-            }
+        $engines = $this->getEngines();
 
-            if ($engine->exists($filename)) {
-                return true;
-            }
+        $fileFound = array_filter($engines, function(EngineInterface $engine) use ($filename) {
+            return $engine->exists($filename);
+        });
 
-            return false;
-        }, false);
-
-        if ($fileFound) {
-            // Already found
+        if (!empty($fileFound)) {
             return $this;
         }
 
-        $fileFound = array_reduce($this->getEngines(), function($fileFound, EngineInterface $engine) use ($filename) {
+        $fileFound = array_reduce($engines, function($fileFound, EngineInterface $engine) use ($filename) {
             if ($fileFound) {
                 return true;
             }

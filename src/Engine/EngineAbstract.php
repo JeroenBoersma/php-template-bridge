@@ -100,7 +100,7 @@ abstract class EngineAbstract implements EngineInterface
         if ($this->exists($filename)) {
             throw new ExistsException("File '${filename}' is already defined.");
         }
-        $this->filepaths[$filename] = $this->lookup($filename);
+        $this->addFilepath($filename, $this->lookup($filename));
 
         return $this;
     }
@@ -111,7 +111,7 @@ abstract class EngineAbstract implements EngineInterface
      * @param Data|null $data
      * @return Content
      */
-    public function addFileAndRender(string $filename, Data $data = null): Content
+    public function addFileAndRender(string $filename, Data $data = null) : Content
     {
         return $this->addFile($filename)
                 ->render($data, $filename);
@@ -126,6 +126,18 @@ abstract class EngineAbstract implements EngineInterface
     {
         return $this->render()
                 ->__toString();
+    }
+
+    /**
+     * Add filepath
+     *
+     * @param string $filename
+     * @return string
+     */
+    protected function addFilepath(string $filename, string $filepath) : EngineInterface
+    {
+        $this->filepaths[$filename] = $filepath;
+        return $this;
     }
 
     /**
@@ -172,7 +184,6 @@ abstract class EngineAbstract implements EngineInterface
         $filename = $this->normalize($filename);
 
         $filePath = array_reduce($this->paths, function($found, $path) use ($filename) {
-
             if ($found) {
                 return $found;
             }

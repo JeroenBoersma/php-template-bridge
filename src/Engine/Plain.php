@@ -5,7 +5,6 @@
 
 namespace Srcoder\TemplateBridge\Engine;
 
-use Srcoder\Normalize\Rule\Append;
 use Srcoder\TemplateBridge\Data;
 
 class Plain extends EngineAbstract
@@ -18,14 +17,15 @@ class Plain extends EngineAbstract
      * Return template
      *
      * @param Data $data
-     * @param string $name
-     * @return string
+     * @param string $singleFilename
+     * @return Content
      */
-    public function render(Data $data = null, string $singleFilename = null): string
+    public function render(Data $data = null, string $singleFilename = null) : Content
     {
-        $filepaths = $this->getFilePaths($singleFilename);
+        $content = new Content('');
+        $filePaths = $this->getFilePaths($singleFilename);
 
-        if (empty($filepaths)) {
+        if (empty($filePaths)) {
             // Nothing to render
             return '';
         }
@@ -43,27 +43,29 @@ class Plain extends EngineAbstract
         ));
         $keys = array_map(function ($key) {
             return "{{\${$key}}}";
-        }, array_keys($data)
-        );
+        }, array_keys($data));
 
-        return implode('', array_map(function ($filepath) use (&$keys, &$data) {
-            return str_replace($keys, $data, $this->content($filepath));
-        }, $filepaths));
+        return array_reduce($filePaths, function(Content $content, $filename) use (&$keys, &$data) {
+
+            $content->append(str_replace($keys, $data, $this->content($filename)));
+
+            return $content;
+        }, $content);
     }
 
     /**
      * Get content
      *
-     * @param string $filepath
+     * @param string $filename
      * @return string
      */
-    protected function content(string $filepath) : string
+    protected function content(string $filename) : string
     {
-        if (!isset($this->contents[$filepath])) {
-            $this->contents[$filepath] = file_get_contents($filepath);
+        if (!isset($this->contents[$filename])) {
+            $this->contents[$filename] = file_get_contents($filename);
         }
 
-        return (string)$this->contents[$filepath];
+        return (string)$this->contents[$filename];
     }
 
 }

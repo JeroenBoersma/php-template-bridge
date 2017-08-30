@@ -6,6 +6,7 @@
 namespace Srcoder\TemplateBridge\Engine;
 
 use Srcoder\TemplateBridge\Data;
+use Srcoder\TemplateBridge\Content;
 
 class Plain extends EngineAbstract
 {

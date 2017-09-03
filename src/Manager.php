@@ -184,7 +184,7 @@ class Manager
                     if ($rendered->isReturn() && $content->isReturn()) {
                         return $rendered;
                     }
-                    $content->append($rendered->content());
+                    $content->append($rendered->toString());
 
                     return $content;
                 },

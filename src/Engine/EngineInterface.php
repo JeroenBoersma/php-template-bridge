@@ -39,7 +39,7 @@ interface EngineInterface
     /**
      * Render template for given file
      *
-     * @param string $fileName
+     * @param string $filename
      * @param Data|null $data
      * @return Content
      */

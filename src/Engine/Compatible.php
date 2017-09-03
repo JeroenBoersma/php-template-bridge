@@ -107,9 +107,9 @@ class Compatible extends EngineAbstract
      *
      * @param Data $data
      * @param string $singleFilename
-     * @return string
+     * @return Content
      */
-    public function render(Data $data = null, string $singleFilename = null): Content
+    public function render(Data $data = null, string $singleFilename = null) : Content
     {
         $content = new Content('', true);
         $filePaths = $this->getFilePaths($singleFilename);
@@ -121,7 +121,7 @@ class Compatible extends EngineAbstract
             if ($rendered->isReturn() && $content->isReturn()) {
                 return $rendered;
             }
-            $content->append($rendered->__toString());
+            $content->append($rendered->toString());
 
             return $content;
         }, $content);

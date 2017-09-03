@@ -125,7 +125,7 @@ abstract class EngineAbstract implements EngineInterface
     public function __toString() : string
     {
         return $this->render()
-                ->__toString();
+                ->toString();
     }
 
     /**

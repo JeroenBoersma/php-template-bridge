@@ -40,9 +40,9 @@ class Twig extends EngineAbstract
      *
      * @param Data $data
      * @param string $singleFilename
-     * @return string
+     * @return Content
      */
-    public function render(Data $data = null, string $singleFilename = null): Content
+    public function render(Data $data = null, string $singleFilename = null) : Content
     {
         $content = new Content('');
         $filePaths = $this->getFilePaths($singleFilename);

@@ -29,11 +29,20 @@ class Content
 
     /**
      *
-     * @return mixed
+     * @return string
      */
     public function __toString() : string
     {
-        return (string)$this->content;
+        return $this->toString();
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function toString() : string
+    {
+        return (string)$this->content();
     }
 
     /**

@@ -61,7 +61,7 @@ class Content
      */
     public function append(string $content)
     {
-        return new self($this->content . $content, false);
+        return new self($this->content . $content);
     }
 
     /**

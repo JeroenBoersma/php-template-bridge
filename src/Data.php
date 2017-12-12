@@ -42,13 +42,15 @@ class Data
      * Set data
      *
      * @param string $key
-     * @param mixed $data
+     * @param mixed $value
      * @return Data
      */
-    public function setData(string $key, $data) : Data
+    public function setData(string $key, $value) : Data
     {
-        $this->data[$key] = $data;
-        return $this;
+        $data = $this->data;
+        $data[$key] = $value;
+
+        return new self($data);
     }
 
     /**

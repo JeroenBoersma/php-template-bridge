@@ -6,7 +6,8 @@
  * Time: 21:20
  */
 
-use Srcoder\TemplateBridge\Data;
+namespace Srcoder\TemplateBridge;
+
 use PHPUnit\Framework\TestCase;
 
 class DataTest extends TestCase

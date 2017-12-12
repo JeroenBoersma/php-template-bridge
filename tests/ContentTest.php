@@ -6,7 +6,8 @@
  * Time: 20:47
  */
 
-use Srcoder\TemplateBridge\Content;
+namespace Srcoder\TemplateBridge;
+
 use PHPUnit\Framework\TestCase;
 
 class ContentTest extends TestCase

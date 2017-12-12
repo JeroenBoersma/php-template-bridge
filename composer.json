@@ -11,8 +11,14 @@
   ],
   "require": {
     "php": "~7.0",
-    "twig/twig": "^2.4",
     "srcoder/normalize-strings": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5"
+  },
+  "suggest": {
+    "twig/twig": "If you want to use the Twig implementation. Version 2.4 is tested.",
+    "erusev/parsedown": "If you want to use the Markdown syntax. Version 1.6 is tested."
   },
   "autoload": {
     "psr-4": {

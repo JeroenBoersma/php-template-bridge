@@ -57,11 +57,11 @@ class Content
     /**
      *
      * @param $content
+     * @return Content
      */
     public function append(string $content)
     {
-        $this->content .= $content;
-        $this->isReturn = false;
+        return new self($this->content . $content, false);
     }
 
     /**

@@ -8,7 +8,6 @@ namespace Srcoder\TemplateBridge\Engine;
 use Srcoder\Normalize\Rule\Append;
 use Srcoder\TemplateBridge\Content;
 use Srcoder\TemplateBridge\Data;
-use Srcoder\TemplateBridge\Exception\NotFoundException;
 
 class Twig extends EngineAbstract
 {
@@ -54,9 +53,7 @@ class Twig extends EngineAbstract
             $rendered = $twig->load($filename)
                     ->render($data->data());
 
-            $content->append($rendered);
-
-            return $content;
+            return $content->append($rendered);
         }, $content);
     }
 

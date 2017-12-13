@@ -116,14 +116,13 @@ class Compatible extends EngineAbstract
 
         return array_reduce($filePaths, function(Content $content, $filename) use ($data, $content) {
             $compatibleClass = new File($this->methods, $this->parent);
-            $rendered = $compatibleClass->___render($this->getRealPath($filename), $data);
 
+            $rendered = $compatibleClass->___render($this->getRealPath($filename), $data);
             if ($rendered->isReturn() && $content->isReturn()) {
                 return $rendered;
             }
-            $content->append($rendered->toString());
 
-            return $content;
+            return $content->append($rendered->toString());
         }, $content);
     }
 

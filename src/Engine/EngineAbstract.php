@@ -132,7 +132,8 @@ abstract class EngineAbstract implements EngineInterface
      * Add filepath
      *
      * @param string $filename
-     * @return string
+     * @param string $filepath
+     * @return EngineInterface
      */
     protected function addFilepath(string $filename, string $filepath) : EngineInterface
     {
@@ -154,7 +155,7 @@ abstract class EngineAbstract implements EngineInterface
     /**
      * Get filepaths
      *
-     * @param string|null $name
+     * @param string|null $singleFilename
      * @return array
      */
     public function getFilePaths(string $singleFilename = null) : array

@@ -32,14 +32,14 @@ class Plain extends EngineAbstract
         }
 
         $data = array_filter(array_map(function ($value) {
-            if (is_object($value) && ! method_exists($value, '__toString')) {
-                return false;
-            } elseif (is_array($value)) {
-                return false;
-            }
+                    if (is_object($value) && ! method_exists($value, '__toString')) {
+                        return false;
+                    } elseif (is_array($value)) {
+                        return false;
+                    }
 
-            return (string)$value;
-        },
+                    return (string)$value;
+                },
                 $data ? $data->data() : []
         ));
         $keys = array_map(function ($key) {
@@ -47,10 +47,7 @@ class Plain extends EngineAbstract
         }, array_keys($data));
 
         return array_reduce($filePaths, function(Content $content, $filename) use (&$keys, &$data) {
-
-            $content->append(str_replace($keys, $data, $this->content($filename)));
-
-            return $content;
+            return $content->append(str_replace($keys, $data, $this->content($filename)));
         }, $content);
     }
 
@@ -62,7 +59,7 @@ class Plain extends EngineAbstract
      */
     protected function content(string $filename) : string
     {
-        if (!isset($this->contents[$filename])) {
+        if (! isset($this->contents[$filename])) {
             $this->contents[$filename] = file_get_contents($filename);
         }
 

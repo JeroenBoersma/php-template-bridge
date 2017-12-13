@@ -44,13 +44,12 @@ class File
             return $this->___callbackParentAsThis($name, $arguments);
         }
 
-        if (!isset($this->___methods['__call'])) {
+        if (! isset($this->___methods['__call'])) {
             return null;
         }
         /** @var \Closure $callback */
         $callback = $this->___methods['__call'];
-        array_unshift($arguments, $name);
-        return $callback->call($parent, $arguments);
+        return $callback->call($parent, $name, $arguments);
     }
 
     /**
@@ -60,7 +59,7 @@ class File
      */
     public function __get($name)
     {
-        if (!$this->___parent) {
+        if (! $this->___parent) {
             return null;
         }
 
@@ -78,7 +77,7 @@ class File
      */
     public function __set($name, $value)
     {
-        if (!$this->___parent) {
+        if (! $this->___parent) {
             return;
         }
 
@@ -107,22 +106,21 @@ class File
      * Render contents
      * @param Data $___data
      * @param string $___filePath
-     * @return string
+     * @return Content
      */
-    public function ___render(string $___filePath, Data $___data = null) : Content
+    public function ___render(string $___filePath, Data $___data = null): Content
     {
         $___data = $___data ?? new Data();
         foreach ($___data->data() as $___k => $___v) {
             ${$___k} = $___v;
-            unset ($___k, $___v);
         }
-        unset($___data);
+        unset ($___k, $___v, $___data);
 
         ob_start();
         $return = include $___filePath;
         $content = ob_get_clean();
-        $isReturn = false;
 
+        $isReturn = false;
         if (1 !== $return) {
             $isReturn = true;
             $content = $return;

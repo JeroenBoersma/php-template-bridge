@@ -60,7 +60,7 @@ class Plain extends EngineAbstract
     protected function content(string $filename) : string
     {
         if (! isset($this->contents[$filename])) {
-            $this->contents[$filename] = file_get_contents($filename);
+            $this->contents[$filename] = file_get_contents($this->getRealPath($filename));
         }
 
         return (string)$this->contents[$filename];
